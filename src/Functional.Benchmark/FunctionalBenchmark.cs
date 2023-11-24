@@ -1,4 +1,7 @@
-﻿namespace Functional.Benchmark;
+﻿using System;
+using System.Threading.Tasks;
+
+namespace Functional.Benchmark;
 
 public sealed class FunctionalBenchmark : IFunctionalBenchmark
 {
