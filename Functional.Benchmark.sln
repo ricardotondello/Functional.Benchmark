@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Benchmark", "src\Functional.Benchmark\Functional.Benchmark.csproj", "{4DC2DA05-FEFC-48A9-863F-E3FB3BD28066}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.BenchmarkTests", "tests\Functional.BenchmarkTests\Functional.BenchmarkTests.csproj", "{BB7B10F6-C44C-4305-A61B-1E991771E16A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DC2DA05-FEFC-48A9-863F-E3FB3BD28066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC2DA05-FEFC-48A9-863F-E3FB3BD28066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC2DA05-FEFC-48A9-863F-E3FB3BD28066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC2DA05-FEFC-48A9-863F-E3FB3BD28066}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB7B10F6-C44C-4305-A61B-1E991771E16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB7B10F6-C44C-4305-A61B-1E991771E16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB7B10F6-C44C-4305-A61B-1E991771E16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB7B10F6-C44C-4305-A61B-1E991771E16A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
