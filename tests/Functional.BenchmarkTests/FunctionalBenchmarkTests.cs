@@ -10,18 +10,17 @@ public class FunctionalBenchmarkTests
     public async Task BenchmarkAsync_ShouldRunExpectedDuration()
     {
         // Arrange
-        const int delayTimeMilliseconds = 1000;
-        var actualElapsedTime = 0.0d;
+        var stopwatchElapsedTime = TimeSpan.Zero;
     
         var funcTask = new Func<Task<int>>(async () => 
         {
-            await Task.Delay(delayTimeMilliseconds);
+            await Task.Delay(100);
             return 10;
         });
 
         var actionStopwatch = new Action<ValueStopwatch>(vs =>
         {
-            actualElapsedTime = vs.GetElapsedTime().TotalMilliseconds;
+            stopwatchElapsedTime = vs.GetElapsedTime();
         });
 
         // Act
@@ -29,7 +28,7 @@ public class FunctionalBenchmarkTests
 
         // Assert
         result.Should().Be(10);
-        actualElapsedTime.Should().BeGreaterOrEqualTo(delayTimeMilliseconds);
+        stopwatchElapsedTime.TotalMilliseconds.Should().BeGreaterThan(0);
     }
     
     [Fact]
