@@ -11,8 +11,15 @@ public sealed class FunctionalBenchmark : IFunctionalBenchmark
         actionStopwatch.ThrowIfNull();
         
         var valueStopwatch = ValueStopwatch.StartNew();
-        var result = await funcTask();
-        actionStopwatch(valueStopwatch);
+        T result;
+        try
+        {
+            result = await funcTask();
+        }
+        finally
+        {
+            actionStopwatch.Invoke(valueStopwatch);
+        }
         return result;
     }
 
@@ -22,8 +29,15 @@ public sealed class FunctionalBenchmark : IFunctionalBenchmark
         actionStopwatchAsync.ThrowIfNull();
         
         var valueStopwatch = ValueStopwatch.StartNew();
-        var result = await funcTask();
-        await actionStopwatchAsync(valueStopwatch);
+        T result;
+        try
+        {
+            result = await funcTask();
+        }
+        finally
+        {
+            await actionStopwatchAsync(valueStopwatch);
+        }
         return result;
     }
 
@@ -33,8 +47,14 @@ public sealed class FunctionalBenchmark : IFunctionalBenchmark
         actionStopwatch.ThrowIfNull();
         
         var valueStopwatch = ValueStopwatch.StartNew();
-        await funcTask();
-        actionStopwatch(valueStopwatch);
+        try
+        {
+            await funcTask();
+        }
+        finally
+        {
+            actionStopwatch(valueStopwatch);
+        }
     }
 
     public async Task BenchmarkAsync(Func<Task> funcTask, Func<ValueStopwatch, Task> actionStopwatchAsync)
@@ -43,8 +63,14 @@ public sealed class FunctionalBenchmark : IFunctionalBenchmark
         actionStopwatchAsync.ThrowIfNull();
         
         var valueStopwatch = ValueStopwatch.StartNew();
-        await funcTask();
-        await actionStopwatchAsync(valueStopwatch);
+        try
+        {
+            await funcTask();
+        }
+        finally
+        {
+            await actionStopwatchAsync(valueStopwatch);
+        }
     }
 
     public void Benchmark(Action action, Action<ValueStopwatch> actionStopwatch)
@@ -52,15 +78,27 @@ public sealed class FunctionalBenchmark : IFunctionalBenchmark
         actionStopwatch.ThrowIfNull();
 
         var valueStopwatch = ValueStopwatch.StartNew();
-        action();
-        actionStopwatch(valueStopwatch);
+        try
+        {
+            action();
+        }
+        finally
+        {
+            actionStopwatch(valueStopwatch);
+        }
     }
 
     public void Benchmark(Action action, out ValueStopwatch valueStopwatch)
     {
         var vs = ValueStopwatch.StartNew();
-        action();
-        valueStopwatch = vs;
+        try
+        {
+            action();
+        }
+        finally
+        {
+            valueStopwatch = vs;
+        }
     }
 
     public T Benchmark<T>(Func<T> func, Action<ValueStopwatch> actionStopwatch)
@@ -68,16 +106,30 @@ public sealed class FunctionalBenchmark : IFunctionalBenchmark
         actionStopwatch.ThrowIfNull();
 
         var valueStopwatch = ValueStopwatch.StartNew();
-        var result = func();
-        actionStopwatch(valueStopwatch);
+        T result;
+        try
+        {
+            result = func();
+        }
+        finally
+        {
+            actionStopwatch(valueStopwatch);
+        }
         return result;
     }
 
     public T Benchmark<T>(Func<T> func, out ValueStopwatch valueStopwatch)
     {
         var vs = ValueStopwatch.StartNew();
-        var result = func();
-        valueStopwatch = vs;
+        T result;
+        try
+        {
+            result = func();
+        }
+        finally
+        {
+            valueStopwatch = vs;
+        }
         return result;
     }
 }
