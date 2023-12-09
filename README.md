@@ -48,7 +48,7 @@ If you would like to contribute code, please fork the repository and submit a pu
 ## License 📄
 
 This project is licensed under the MIT License.
-See [LICENSE](https://github.com/ricardotondello/FunctionalStringExtensions/blob/main/LICENSE) for more information.
+See [LICENSE](https://github.com/ricardotondello/Functional.Benchmark/blob/main/LICENSE) for more information.
 
 ## Support ☕
 

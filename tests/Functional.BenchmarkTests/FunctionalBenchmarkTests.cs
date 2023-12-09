@@ -30,7 +30,7 @@ public class FunctionalBenchmarkTests
         // Assert
         result.Should().Be(10);
         actualElapsedTime.Should().NotBeNull();
-        actualElapsedTime?.TotalMilliseconds.Should().BeGreaterOrEqualTo(delayTimeMilliseconds);
+        actualElapsedTime?.TotalMilliseconds.Should().BeInRange(delayTimeMilliseconds - 200, delayTimeMilliseconds + 200);
     }
     
     [Fact]
