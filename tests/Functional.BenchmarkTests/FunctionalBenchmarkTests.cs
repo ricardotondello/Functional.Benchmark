@@ -1,61 +1,53 @@
-using System.Reflection;
-
 namespace Functional.BenchmarkTests;
 
 public class FunctionalBenchmarkTests
 {
     private static readonly IFunctionalBenchmark FunctionalBenchmark = new FunctionalBenchmark();
-    
+
     [Fact]
     public async Task BenchmarkAsync_ShouldRunExpectedDuration()
     {
         // Arrange
         const int delayTimeMilliseconds = 1000;
         TimeSpan? actualElapsedTime = null;
-    
-        var funcTask = new Func<Task<int>>(async () => 
+
+        var funcTask = new Func<Task<int>>(async () =>
         {
             await Task.Delay(delayTimeMilliseconds);
             return 10;
         });
 
-        var actionStopwatch = new Action<ValueStopwatch>(vs =>
-        {
-            actualElapsedTime = vs.GetElapsedTime();
-        });
+        var actionStopwatch = new Action<ValueStopwatch>(vs => { actualElapsedTime = vs.GetElapsedTime(); });
 
         // Act
         var result = await FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatch);
 
         // Assert
-        result.Should().Be(10);
-        actualElapsedTime.Should().NotBeNull();
-        actualElapsedTime?.TotalMilliseconds.Should().BeInRange(delayTimeMilliseconds - 200, delayTimeMilliseconds + 200);
+        Assert.Equal(10, result);
+        Assert.NotNull(actualElapsedTime);
+        Assert.InRange(actualElapsedTime.Value.TotalMilliseconds, delayTimeMilliseconds - 200,
+            delayTimeMilliseconds + 200);
     }
-    
+
     [Fact]
     public async Task BenchmarkAsync_WhenFuncIsNullShouldThrowArgumentNullException()
     {
         // Arrange
-        var actionStopwatch = new Action<ValueStopwatch>(vs =>
-        {
-            vs.GetElapsedTime();
-        });
+        var actionStopwatch = new Action<ValueStopwatch>(vs => { vs.GetElapsedTime(); });
 
-        var act = () => FunctionalBenchmark.BenchmarkAsync(null!, actionStopwatch);
-        
         // Act
         // Assert
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => FunctionalBenchmark.BenchmarkAsync(null!, actionStopwatch));
     }
-    
+
     [Fact]
     public async Task BenchmarkAsync_WhenActionIsNullShouldThrowArgumentNullException()
     {
         // Arrange
         const int delayTimeMilliseconds = 1000;
 
-        var funcTask = new Func<Task<int>>(async () => 
+        var funcTask = new Func<Task<int>>(async () =>
         {
             await Task.Delay(delayTimeMilliseconds);
             return 10;
@@ -63,13 +55,12 @@ public class FunctionalBenchmarkTests
 
         Action<ValueStopwatch> actionStopwatch = null!;
 
-        var act = () => FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatch);
-        
         // Act
         // Assert
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatch));
     }
-    
+
     [Fact]
     public async Task BenchmarkAsync_ReturnsSameValueAsFuncTask()
     {
@@ -81,35 +72,35 @@ public class FunctionalBenchmarkTests
         var result = await FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatchAsync);
 
         // Assert
-        result.Should().Be(42);
+        Assert.Equal(42, result);
     }
-    
+
     [Fact]
     public async Task BenchmarkAsync_WithNullActionFuncReturnsSameValueAsFuncTask()
     {
         // Arrange
         var funcTask = () => Task.FromResult(42);
 
-        var act = () => FunctionalBenchmark.BenchmarkAsync(funcTask, null!);
         // Act
         // Assert
-        await act.Should().ThrowAsync<ArgumentNullException>();
+
+        await Assert.ThrowsAsync<ArgumentNullException>(() => FunctionalBenchmark.BenchmarkAsync(funcTask, null!));
     }
-    
+
     [Fact]
-    public void BenchmarkAsync_ShouldCompleteGivenValidInputs()
+    public async Task BenchmarkAsync_ShouldCompleteGivenValidInputs()
     {
         // Arrange
         var funcTask = () => Task.CompletedTask;
-        Action<ValueStopwatch> actionStopwatch = _ => {};
+        Action<ValueStopwatch> actionStopwatch = _ => { };
 
         // Act
-        var act = () => FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatch);
-
         // Assert
-        act.Should().NotThrowAsync();
+        var exceptions =
+            await Record.ExceptionAsync(() => FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatch));
+        Assert.Null(exceptions);
     }
-    
+
     [Fact]
     public async Task BenchmarkAsync_ShouldCompleteGivenValidInputsAsync()
     {
@@ -118,26 +109,25 @@ public class FunctionalBenchmarkTests
         Func<ValueStopwatch, Task> actionStopwatchAsync = _ => Task.CompletedTask;
 
         // Act
-        var act = () => FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatchAsync);
-
         // Assert
-        await act.Should().NotThrowAsync();
+        var exceptions =
+            await Record.ExceptionAsync(() => FunctionalBenchmark.BenchmarkAsync(funcTask, actionStopwatchAsync));
+        Assert.Null(exceptions);
     }
-    
+
     [Fact]
     public void Benchmark_ShouldCompleteGivenValidInputs()
     {
         // Arrange
-        var action = () => {};
-        Action<ValueStopwatch> actionStopwatch = _ => {};
+        var action = () => { };
+        Action<ValueStopwatch> actionStopwatch = _ => { };
 
         // Act
-        var act = () => FunctionalBenchmark.Benchmark(action, actionStopwatch);
-
         // Assert
-        act.Should().NotThrow();
+        var exception = Record.Exception(() => FunctionalBenchmark.Benchmark(action, actionStopwatch));
+        Assert.Null(exception);
     }
-    
+
     [Fact]
     public void BenchmarkWithAction_ShouldCompleteGivenValidInputs()
     {
@@ -145,29 +135,25 @@ public class FunctionalBenchmarkTests
         var action = () => { };
 
         // Act
-        var act = () => 
-        {
-            FunctionalBenchmark.Benchmark(action, out _);
-        };
-
         // Assert
-        act.Should().NotThrow();
+        var exception = Record.Exception(() => FunctionalBenchmark.Benchmark(action, out _));
+        Assert.Null(exception);
     }
-    
+
     [Fact]
     public void Benchmark_ReturnsSameValueAsFunc()
     {
         // Arrange
         var func = () => 42;
-        Action<ValueStopwatch> actionStopwatch = _ => {};
+        Action<ValueStopwatch> actionStopwatch = _ => { };
 
         // Act
         var result = FunctionalBenchmark.Benchmark(func, actionStopwatch);
 
         // Assert
-        result.Should().Be(42);
+        Assert.Equal(42, result);
     }
-    
+
     [Fact]
     public void Benchmark_WithInactiveStopWatch_ShouldThrow()
     {
@@ -180,15 +166,10 @@ public class FunctionalBenchmarkTests
         };
 
         // Act
-        var act =() =>
-        {
-            FunctionalBenchmark.Benchmark(func, actionStopwatch);
-        };
-
         // Assert
-        act.Should().Throw<InvalidOperationException>();
+        Assert.Throws<InvalidOperationException>(() => FunctionalBenchmark.Benchmark(func, actionStopwatch));
     }
-    
+
     [Fact]
     public void BenchmarkWithFunc_ReturnsSameValueAsFunc()
     {
@@ -199,6 +180,6 @@ public class FunctionalBenchmarkTests
         var result = FunctionalBenchmark.Benchmark(func, out _);
 
         // Assert
-        result.Should().Be(42);
+        Assert.Equal(42, result);
     }
 }
