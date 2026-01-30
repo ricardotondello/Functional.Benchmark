@@ -1,4 +1,8 @@
 <Solution>
-  <Project Path="src/Functional.Benchmark/Functional.Benchmark.csproj" />
-  <Project Path="tests/Functional.BenchmarkTests/Functional.BenchmarkTests.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/Functional.Benchmark/Functional.Benchmark.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Functional.BenchmarkTests/Functional.BenchmarkTests.csproj" />
+  </Folder>
 </Solution>
