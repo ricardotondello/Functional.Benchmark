@@ -37,8 +37,8 @@ public class FunctionalBenchmarkTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(
-            () => FunctionalBenchmark.BenchmarkAsync(null!, actionStopwatch));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            FunctionalBenchmark.BenchmarkAsync(null!, actionStopwatch));
     }
 
     [Fact]
